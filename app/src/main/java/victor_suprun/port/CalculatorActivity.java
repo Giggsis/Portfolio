@@ -8,27 +8,25 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.Stack;
 
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by QLon on 03.10.2017.
- */
-
 public class CalculatorActivity extends AppCompatActivity {
+
     @BindViews({R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4, R.id.n5, R.id.n6, R.id.n7, R.id.n8, R.id.n9, R.id.sRes, R.id.sAdd, R.id.sDiv, R.id.sDot, R.id.sMul, R.id.sSub, R.id.cleanO})
     List<Button> viewButtons;
+
     @BindViews({R.id.result,R.id.math})
     List<TextView> viewText;
-    Queue<String> resultMath = new PriorityQueue();
-    String operands="", operand2="", operator="";
-    boolean checkForSign = false, checkForDot = false;
+
+    Stack<Double> resultMath = new Stack<>();
     List<Integer> numbers = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
     List<String> operators = Arrays.asList("+", "-", "*", "/");
+    String op1="", op2="", or="";
+    boolean s = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,57 +34,55 @@ public class CalculatorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player);
         ButterKnife.bind(this);
 
-        resultMath.add("");
+
     }
+    private void toStack(String math) {
 
-
-
-    //-------------------Trash ! ! !
-    //                         V V V
-    private String operator1 = "", operand = "", operator2 = "";
-    private void toStack(String math)
-    {
-//         math
-//  s
-    }
-    private void cleanQueue()
-    {
-        operands = "";
-        resultMath.clear();
-        resultMath.add("");
-        viewText.get(1).setText(operands);
-    }
-    private void makeResoult()
-    {
-
-
-
-        ///////////////////////////////             FIX THIS!!!!!!!!!!!!!!!!!!
-        resultMath.poll();
-        String operator1 = "", operand = "", operator2 = "";
-        double dOperator1, dOperator2;
-        boolean ch = false;
-        for(int i = 0; i < resultMath.size(); i++) {
-
-            try {
-
-                Double.parseDouble(resultMath.poll());
-                operator1 += resultMath.poll().toString();
-
-            }
-            catch (NumberFormatException e)
-            {
-                operand = resultMath.poll();
-
-            }
-
-
-            Log.d("RESOULT",operator1 + " _ " + operand + " _ " +operator2);
+        if(!s)
+        {
+            op1+=math;
+        }else if (s)
+        {
+            op2+=math;
         }
+
+        Log.d("TO_STACK","op1 =" + op1 +" po2 =  "+ op2 +"  or =  "+ or);
+    }
+    private void cleanQueue()    {
+        op1="";
+        op2 ="";
+        or="";
+        s = false;
+    }
+    private void getSign(String sign)    {
+        or = sign;
+        s = true;
+    }
+    private void makeResoult(String sign)   {
+       switch (sign)
+       {
+           case "+": resultMath.push(Double.parseDouble(op1) + Double.parseDouble(op2));
+               Log.d("STACK_RESOULT","" + resultMath);
+               break;
+           case "-": resultMath.push(Double.parseDouble(op1) - Double.parseDouble(op2));
+               Log.d("STACK_RESOULT","" + resultMath);
+               break;
+           case "*": resultMath.push(Double.parseDouble(op1) * Double.parseDouble(op2));
+               Log.d("STACK_RESOULT","" + resultMath);
+               break;
+           case "/": resultMath.push(Double.parseDouble(op1) / Double.parseDouble(op2));
+               Log.d("STACK_RESOULT","" + resultMath);
+
+               break;
+       }
+
+       op1="";
+       op2 ="";
+       or="";
+       s = false;
     }
     @OnClick({R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4, R.id.n5, R.id.n6, R.id.n7, R.id.n8, R.id.n9, R.id.sRes, R.id.sAdd, R.id.sDiv, R.id.sDot, R.id.sMul, R.id.sSub, R.id.cleanO})
     void onSaveClick(Button view) {
-        String n1, n2;
         switch (view.getId()) {
             case R.id.cleanO:
                 cleanQueue();
@@ -123,26 +119,26 @@ public class CalculatorActivity extends AppCompatActivity {
                 break;
             case R.id.sAdd:
                 viewButtons.get(13).setEnabled(true);
-                toStack(operators.get(0));
+                getSign(operators.get(0));
                 break;
             case R.id.sSub:
                 viewButtons.get(13).setEnabled(true);
-                toStack(operators.get(1));
+                getSign(operators.get(1));
                 break;
             case R.id.sMul:
                 viewButtons.get(13).setEnabled(true);
-                toStack(operators.get(2));
+                getSign(operators.get(2));
                 break;
             case R.id.sDiv:
                 viewButtons.get(13).setEnabled(true);
-                toStack(operators.get(3));
+                getSign(operators.get(3));
                 break;
             case R.id.sDot:
                 viewButtons.get(13).setEnabled(false);
                 toStack(".");
                 break;
             case R.id.sRes:
-                makeResoult();
+                makeResoult(or);
                 viewButtons.get(13).setEnabled(true);
                 break;
         }

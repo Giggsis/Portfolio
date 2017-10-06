@@ -26,11 +26,17 @@ dependencies {
     })
 
     apply plugin: 'com.jakewharton.butterknife'
+    apply plugin: 'me.tatarka.retrolambda'
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile 'com.google.firebase:firebase-database:10.0.1'
     testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
+
+
+
+apply plugin: 'com.google.gms.google-services'
